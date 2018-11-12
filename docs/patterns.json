@@ -491,5 +491,6 @@
             "level": "Error",
             "patternId": "E4001"
         }
-    ]
+    ],
+    "version": "0.8.3"
 }
