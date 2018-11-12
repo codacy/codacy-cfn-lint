@@ -39,6 +39,11 @@ def get_class_instance(path, path_prefix):
     return getattr(module, class_name)
 
 
+def get_cfnlint_version(path):
+    vline = list(filter(lambda x: "__version__" in x, open(path, "r").readlines()))[0]
+    return vline.split("=")[1].strip().replace("'","")
+
+
 if len(sys.argv) != 2:
     print("usage: %s <cfn-lint source base dir>"%sys.argv[0])
     sys.exit(1)
@@ -54,7 +59,7 @@ desc_file.write(" Includes checking valid values for resource properties and bes
 desc_file.write(" [Learn more](https://github.com/awslabs/cfn-python-lint)")
 
 docs = list()
-pats = dict(name="cfn-lint", patterns=list())
+pats = dict(name="cfn-lint", version=get_cfnlint_version("%s/src/cfnlint/version.py"%cfnlint_path), patterns=list())
 
 LEVEL_MAP = dict(W="Warning", E="Error", I="Info")
 CATEGORY_MAP = dict(W="CodeStyle", E="ErrorProne", I="Documentation")
