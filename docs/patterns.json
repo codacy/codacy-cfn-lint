@@ -490,6 +490,21 @@
             "category": "ErrorProne",
             "level": "Error",
             "patternId": "E4001"
+        },
+        {
+            "category": "ErrorProne",
+            "level": "Error",
+            "patternId": "E0000"
+        },
+        {
+            "category": "ErrorProne",
+            "level": "Error",
+            "patternId": "E0001"
+        },
+        {
+            "category": "ErrorProne",
+            "level": "Error",
+            "patternId": "E0002"
         }
     ],
     "version": "0.8.3"

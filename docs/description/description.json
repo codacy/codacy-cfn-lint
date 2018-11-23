@@ -586,5 +586,23 @@
         "patternId": "E4001",
         "timeToFix": 5,
         "title": "Metadata Interface have appropriate properties"
+    },
+    {
+        "description": "Parse Lint Rule",
+        "patternId": "E0000",
+        "timeToFix": 5,
+        "title": "Parsing error found when parsing the template"
+    },
+    {
+        "description": "Transform Lint Rule",
+        "patternId": "E0001",
+        "timeToFix": 5,
+        "title": "Error found when transforming the template"
+    },
+    {
+        "description": "Rule processing Error",
+        "patternId": "E0002",
+        "timeToFix": 5,
+        "title": "Error processing rule on the template"
     }
 ]

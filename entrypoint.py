@@ -5,27 +5,9 @@ import sys
 import glob
 import json
 import subprocess
-import cfnlint.decode.cfn_yaml as cfn_yaml
 
-def is_cfn(filename):
-    """Check if a file is a cloudformation template
-
-    :param filename: name of the file to check
-    :return        : True if it is, False otherwise
-    """
-    try:
-        cfn = cfn_yaml.load(filename)
-        if 'Resources' in cfn:
-            return True
-        else:
-            with open(filename) as f:
-                cfn = json.load(f)
-            if 'Resources' in cfn:
-                return True
-            else:
-                return False
-    except:
-        return False
+def is_debug():
+    return os.environ.get('DEBUG') and os.environ.get('DEBUG').lower().strip() == "true"
 
 def parse_codacy_conf(filename, toolname="cfn-lint"):
     """Try to load codacy.json file
@@ -86,8 +68,7 @@ def run_cfnlint(basedir, path, patterns):
     :return        : List of results in Codacy format, or a Codacy error message if there is an error
     """
 
-    debug = True if (os.environ.get('DEBUG') and os.environ.get('DEBUG').lower().strip() == "true") else False
-    cmd = (["cfn-lint", "-d", "-f", "json", "%s/%s"%(basedir, path)] if debug
+    cmd = (["cfn-lint", "-d", "-f", "json", "%s/%s"%(basedir, path)] if is_debug()
             else ["cfn-lint", "-f", "json", "%s/%s"%(basedir, path)])
 
     try:
@@ -108,9 +89,8 @@ if __name__ == "__main__":
             files = get_all_files(basedir)
 
         for path in files:
-            if is_cfn("%s/%s"%(basedir, path)):
-                for hit in run_cfnlint(basedir, path, patterns):
-                    print(json.dumps(hit))
+            for hit in run_cfnlint(basedir, path, patterns):
+                print(json.dumps(hit))
     except Exception as e:
         print("Unknown error in tool:\n%s"%str(e))
         sys.exit(1)
