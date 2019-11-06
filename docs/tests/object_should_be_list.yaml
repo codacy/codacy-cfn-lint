@@ -1,37 +1,4 @@
-##Patterns: W7001,E3012,E3012,E3012,E3012,E3012,E3012,E3012,E3012,E3012,E3012,E3012,E3002,E3002,E3016,E3016,E3016,E3012,E3012,E3003,E1012,E1025,E1025,E3002,E1012,E1012,E1012,E1012,E1025,E3002,E1012,E1012,E1012
-##Issue: {"severity": "Warning", "line": 152, "patternId": "W7001"}
-##Issue: {"severity": "Error", "line": 450, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 453, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 455, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 467, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 470, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 472, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 478, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 496, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 498, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 499, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 509, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 606, "patternId": "E3002"}
-##Issue: {"severity": "Error", "line": 657, "patternId": "E3002"}
-##Issue: {"severity": "Error", "line": 668, "patternId": "E3016"}
-##Issue: {"severity": "Error", "line": 669, "patternId": "E3016"}
-##Issue: {"severity": "Error", "line": 671, "patternId": "E3016"}
-##Issue: {"severity": "Error", "line": 678, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 686, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 690, "patternId": "E3003"}
-##Issue: {"severity": "Error", "line": 691, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 691, "patternId": "E1025"}
-##Issue: {"severity": "Error", "line": 692, "patternId": "E1025"}
-##Issue: {"severity": "Error", "line": 692, "patternId": "E3002"}
-##Issue: {"severity": "Error", "line": 694, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 695, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 696, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 697, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 699, "patternId": "E1025"}
-##Issue: {"severity": "Error", "line": 699, "patternId": "E3002"}
-##Issue: {"severity": "Error", "line": 701, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 703, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 705, "patternId": "E1012"}
+##Patterns: W7001,E3012,E3002,E3016,E3003,E1012,E1025
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'AWS CloudFormation Sample Template AutoScalingMultiAZWithNotifications:
   Create a multi-az, load balanced and Auto Scaled sample web site running on an Apache
@@ -149,6 +116,7 @@ Mappings:
       Arch: HVM64
     t2.small:
       Arch: HVM64
+  ##Warn: W7001
   AWSInstanceType2NATArch:
     c1.medium:
       Arch: NATPV64
@@ -447,11 +415,14 @@ Resources:
       - Name: AutoScalingGroupName
         Value:
           Ref: WebServerGroup
+      ##Err: E3012
       EvaluationPeriods: '2'
       MetricName: CPUUtilization
       Namespace: AWS/EC2
+      ##Err: E3012
       Period: '300'
       Statistic: Average
+      ##Err: E3012
       Threshold: '90'
     Type: AWS::CloudWatch::Alarm
   CPUAlarmLow:
@@ -464,17 +435,21 @@ Resources:
       - Name: AutoScalingGroupName
         Value:
           Ref: WebServerGroup
+      ##Err: E3012
       EvaluationPeriods: '2'
       MetricName: CPUUtilization
       Namespace: AWS/EC2
+      ##Err: E3012
       Period: '300'
       Statistic: Average
+      ##Err: E3012
       Threshold: '70'
     Type: AWS::CloudWatch::Alarm
   ElasticLoadBalancer:
     Properties:
       AvailabilityZones:
         Fn::GetAZs: ''
+      ##Err: E3012
       CrossZone: 'true'
       HealthCheck:
         HealthyThreshold: '3'
@@ -493,9 +468,12 @@ Resources:
       SecurityGroupIngress:
       - CidrIp:
           Ref: SSHLocation
+        ##Err: E3012
         FromPort: '22'
         IpProtocol: tcp
+        ##Err: E3012
         ToPort: '22'
+      ##Err: E3012
       - FromPort: '80'
         IpProtocol: tcp
         SourceSecurityGroupName:
@@ -506,6 +484,7 @@ Resources:
           Fn::GetAtt:
           - ElasticLoadBalancer
           - SourceSecurityGroup.OwnerAlias
+        ##Err: E3012
         ToPort: '80'
     Type: AWS::EC2::SecurityGroup
   LaunchConfig:
@@ -603,6 +582,7 @@ Resources:
         Ref: InstanceType
       KeyName:
         Ref: KeyName
+      ##Err: E3002
       SecurityGroups: !Ref InstanceSecurityGroup
       UserData:
         Fn::Base64:
@@ -654,6 +634,7 @@ Resources:
       - Ref: ElasticLoadBalancer
       MaxSize: '3'
       MinSize: '1'
+      ##Err: E3002
       NotificationConfigurations:
         NotificationTypes:
         - autoscaling:EC2_INSTANCE_LAUNCH
@@ -665,9 +646,12 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     UpdatePolicy:
       AutoScalingRollingUpdate:
+        ##Err: E3016
         MaxBatchSize: '1'
+        ##Err: E3016
         MinInstancesInService: '1'
         PauseTime: PT15M
+        ##Err: E3016
         WaitOnResourceSignals: 'true'
   WebServerScaleDownPolicy:
     Properties:
@@ -675,6 +659,7 @@ Resources:
       AutoScalingGroupName:
         Ref: WebServerGroup
       Cooldown: '60'
+      ##Err: E3012
       ScalingAdjustment: '-1'
     Type: AWS::AutoScaling::ScalingPolicy
   WebServerScaleUpPolicy:
@@ -683,25 +668,36 @@ Resources:
       AutoScalingGroupName:
         Ref: WebServerGroup
       Cooldown: '60'
+      ##Err: E3012
       ScalingAdjustment: '1'
     Type: AWS::AutoScaling::ScalingPolicy
   Table:
     Type: 'AWS::DynamoDB::Table'
     Properties:
+      ##Err: E1012
       TableName: !If [HasTableName, !Ref TableName, !Ref 'AWS::NoValue']
       AttributeDefinitions: !If
       - HasSortKey
+      ##Err: E1012
       - - AttributeName: !Ref PartitionKeyName
+        ##Err: E1012
           AttributeType: !Ref PartitionKeyType
+        ##Err: E1012
         - AttributeName: !Ref SortKeyName
+        ##Err: E1012
           AttributeType: !Ref SortKeyType
+      ##Err: E3002
       - "String"
       KeySchema: !If
       - HasSortKey
+      ##Err: E1012
       - - AttributeName: !Ref PartitionKeyName
           KeyType: HASH
+        ##Err: E1012
         - AttributeName: !Ref SortKeyName
           KeyType: RANGE
+      ##Err: E1012
       - - AttributeName: !Ref PartitionKeyName
           KeyType: HASH
+        ##Err: E3002
         - "String2"

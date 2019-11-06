@@ -1,14 +1,4 @@
-##Patterns: E3004,E3012,E3012,E3004,E3012,E1012,E1019,E1012,E1019,E1012
-##Issue: {"severity": "Error", "line": 19, "patternId": "E3004"}
-##Issue: {"severity": "Error", "line": 26, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 29, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 31, "patternId": "E3004"}
-##Issue: {"severity": "Error", "line": 38, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 51, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 57, "patternId": "E1019"}
-##Issue: {"severity": "Error", "line": 70, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 77, "patternId": "E1019"}
-##Issue: {"severity": "Error", "line": 80, "patternId": "E1012"}
+##Patterns: E3004,E3012,E1019
 ---
 AWSTemplateFormatVersion: "2010-09-09"
 Parameters:
@@ -16,6 +6,7 @@ Parameters:
     Description: MyVpc Id
     Type: AWS::EC2::VPC::Id
 Resources:
+  ##Err: E3004
   mySecurityGroupVpc1:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -23,11 +14,14 @@ Resources:
       VpcId: !Ref myVpcId
       SecurityGroupIngress:
       -
+        ##Err: E3012
         IpProtocol: 1
         SourceSecurityGroupId: 'sg-1234567'
       -
+        ##Err: E3012
         IpProtocol: 1
         SourceSecurityGroupId: !Ref mySecurityGroupVpc2
+  ##Err: E3004
   mySecurityGroupVpc2:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -35,6 +29,7 @@ Resources:
       VpcId: !Ref myVpcId
       SecurityGroupIngress:
       -
+        ##Err: E3012
         IpProtocol: 1
         SourceSecurityGroupId: !Ref mySecurityGroupVpc1
   MyEC2Instance:
@@ -54,6 +49,7 @@ Resources:
       NetworkInterfaces:
         - DeviceIndex: "1"
       # Package doesn't exist as parameter
+      ##Err: E1019
       UserData: !Sub |
         yum install ${Package}
   AnotherInstance:
@@ -74,7 +70,9 @@ Resources:
         - DeviceIndex: "1"
       # Package doesn't exist as parameter
       UserData:
+        ##Err: E1019
         Fn::Sub:
+        ##Err: E1019
         - "yum install ${myPackage} ${Package}"
         -
           myPackage: !Ref httpdPackage

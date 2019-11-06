@@ -1,41 +1,12 @@
-##Patterns: E1001,W2001,E3001,E3001,E3012,E3002,E2502,E1012,E3002,E3002,E3002,E2502,E2522,E3003,E3002,E1012,E3002,E1012,E3012,E3003,E3012,E3003,E3003,E3003,E3003,E3003,E3012,E3012,E3012,E3012,E1010
-##Issue: {"severity": "Error", "line": 36, "patternId": "E1001"}
-##Issue: {"severity": "Warning", "line": 39, "patternId": "W2001"}
-##Issue: {"severity": "Error", "line": 48, "patternId": "E3001"}
-##Issue: {"severity": "Error", "line": 49, "patternId": "E3001"}
-##Issue: {"severity": "Error", "line": 58, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 59, "patternId": "E3002"}
-##Issue: {"severity": "Error", "line": 60, "patternId": "E2502"}
-##Issue: {"severity": "Error", "line": 66, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 69, "patternId": "E3002"}
-##Issue: {"severity": "Error", "line": 71, "patternId": "E3002"}
-##Issue: {"severity": "Error", "line": 73, "patternId": "E3002"}
-##Issue: {"severity": "Error", "line": 78, "patternId": "E2502"}
-##Issue: {"severity": "Error", "line": 81, "patternId": "E2522"}
-##Issue: {"severity": "Error", "line": 97, "patternId": "E3003"}
-##Issue: {"severity": "Error", "line": 100, "patternId": "E3002"}
-##Issue: {"severity": "Error", "line": 139, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 143, "patternId": "E3002"}
-##Issue: {"severity": "Error", "line": 145, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 152, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 158, "patternId": "E3003"}
-##Issue: {"severity": "Error", "line": 159, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 162, "patternId": "E3003"}
-##Issue: {"severity": "Error", "line": 162, "patternId": "E3003"}
-##Issue: {"severity": "Error", "line": 166, "patternId": "E3003"}
-##Issue: {"severity": "Error", "line": 166, "patternId": "E3003"}
-##Issue: {"severity": "Error", "line": 166, "patternId": "E3003"}
-##Issue: {"severity": "Error", "line": 175, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 177, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 198, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 199, "patternId": "E3012"}
-##Issue: {"severity": "Error", "line": 216, "patternId": "E1010"}
+##Patterns: E1001,W2001,E3001,E3002,E2502,E1012,E2522,E3003,E3012,E1010
 ---
 AWSTemplateFormatVersion: "2010-09-09"
 Description: A sample template
+##Err: E1001
 Errors:
   Catch: Missing
 Parameters:
+  ##Warn: W2001
   myParam:
     Type: String
     Default: String
@@ -45,7 +16,9 @@ Conditions:
 Resources:
   ## Missing Properties
   MyEC2Instance1:
+    ##Err: E3001
     Type: "AWS::EC2::Instance1"
+  ##Err: E3001
   myIamProfile:
     Type: "AWS::IAM::Role"
   ## Fake Properties Key on main level
@@ -55,7 +28,9 @@ Resources:
     Properties:
       ImageId: "ami-2f726546"
       InstanceType: t1.micro
+      ##Err: E3012
       KeyName: 1
+      ##Err: E3002
       FakeKey: MadeYouLook
       IamInstanceProfile: !GetAtt RootInstanceProfile.Arn
       BlockDeviceMappings:
@@ -63,13 +38,17 @@ Resources:
           DeviceName: /dev/sda
           Ebs:
             VolumeType: io1
+            ##Err: E1012
             Iops: !Ref pIops
             DeleteOnTermination: false
             VolumeSize: 20
+            ##Err: E3002
             BadSubX2Key: Not valid
       NetworkInterfaces:
+        ##Err: E3002
         - DeviceIndex:
           - "1"
+          ##Err: E3002
           BadKey: true
   MyEC2Instance3:
     Type: "AWS::EC2::Instance"
@@ -78,6 +57,7 @@ Resources:
       IamInstanceProfile: !Ref RootRole
   myEc2Instance4:
     Type: AWS::EC2::Instance
+    ##Err: E2522
     Properties: {}
   ## Bad Policies property in PolicyDocument
   RootRole:
@@ -96,7 +76,9 @@ Resources:
       Path: "/"
       Policies:
         -
+          ##Err: E3003
           PolicyName: "root"
+          ##Err: E3002
           PolicyDocument1:
             Version: "2012-10-17"
             Statement:
@@ -136,35 +118,33 @@ Resources:
       - Ref: MyEC2Instance
       Listeners:
       - LoadBalancerPort: '80'
+        ##Err: E1012
         InstancePort:
           Ref: WebServerPort
         Protocol: HTTP
       HealthCheck:
+        ##Err: E3002
         FakeKey: Another fake key
         Target:
           Fn::Join:
           - ''
           - - 'HTTP:'
+            ##Err: E1012
             - Ref: WebServerPort
             - "/"
         HealthyThreshold: '3'
         # Int which should be string. (No Error)
+        ##Err: E3012
         UnhealthyThreshold: 5
         # Should be int (Error)
         Interval: Test
         Timeout: '5'
   SecurityGroup:
     Type: AWS::EC2::SecurityGroupIngress
+    ##Err: E3003
     Properties:
+      ##Err: E3012
       FromPort: Test
-  myAcl:
-    Type: AWS::WAFRegional::WebACL
-    Properties:
-      Name: myAcl
-  myLambdaTwo:
-    Type: AWS::Lambda::Function
-    Properties:
-      Handler: index.handler
   conditionLoadBalancer:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
@@ -172,9 +152,12 @@ Resources:
       - Fn::If:
         - IsProduction
         - Key: Production
+          ##Err: E3012
           Value: True
         - Key: Production
+          ##Err: E3012
           Value: False
+      ##Err: E3002
       Fn::If:
       - IsProduction
       - AvailabilityZones:
@@ -195,7 +178,9 @@ Resources:
           Interval: '30'
           Timeout: '5'
         ConnectionDrainingPolicy:
+          ##Err: E3012
           Enabled: 'true'
+          ##Err: E3012
           Timeout: '60'
       - AvailabilityZones:
           Fn::GetAZs: ''
@@ -213,4 +198,5 @@ Outputs:
   myOutput:
     Value: !GetAtt ElasticLoadBalancer.CanonicalHostedZoneName
   myErrorOutput:
+    ##Err: E1010
     Value: !GetAtt ElasticLoadBalancer.DNE

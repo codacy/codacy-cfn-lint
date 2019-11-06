@@ -1,9 +1,4 @@
-##Patterns: E1012,E1019,E1012,E1019,E1012
-##Issue: {"severity": "Error", "line": 21, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 27, "patternId": "E1019"}
-##Issue: {"severity": "Error", "line": 40, "patternId": "E1012"}
-##Issue: {"severity": "Error", "line": 47, "patternId": "E1019"}
-##Issue: {"severity": "Error", "line": 50, "patternId": "E1012"}
+##Patterns: E1012,E1019
 ---
 AWSTemplateFormatVersion: '2010-09-09'
 Resources:
@@ -18,12 +13,14 @@ Resources:
           DeviceName: /dev/sdm
           Ebs:
             VolumeType: io1
+            ##Err: E1012
             Iops: !Ref pIops
             DeleteOnTermination: false
             VolumeSize: 20
       NetworkInterfaces:
         - DeviceIndex: "1"
       # Package doesn't exist as parameter
+      ##Err: E1019
       UserData: !Sub |
         yum install ${Package}
   AnotherInstance:
@@ -37,6 +34,7 @@ Resources:
           DeviceName: /dev/sdm
           Ebs:
             VolumeType: io1
+            ##Err: E1012
             Iops: !Ref pIops
             DeleteOnTermination: false
             VolumeSize: 20
@@ -44,7 +42,10 @@ Resources:
         - DeviceIndex: "1"
       # Package doesn't exist as parameter
       UserData:
+        ##Err: E1019
         Fn::Sub:
+        ##Err: E1019
         - "yum install ${myPackage} ${Package}"
         -
+          ##Err: E1012
           myPackage: !Ref httpdPackage
