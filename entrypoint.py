@@ -9,7 +9,7 @@ import subprocess
 def is_debug():
     return os.environ.get('DEBUG') and os.environ.get('DEBUG').lower().strip() == "true"
 
-def parse_codacy_conf(filename, toolname="cfn-lint"):
+def parse_codacy_conf(filename, toolname="CloudFormation Linter"):
     """Try to load codacy.json file
 
     If the file is missing return two empty lists, otherwise,

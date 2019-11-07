@@ -110,7 +110,7 @@ desc_file.write(
 desc_file.write(" [Learn more](https://github.com/awslabs/cfn-python-lint)")
 
 docs = list()
-pats = dict(name="cfn-lint", version=get_cfnlint_version(
+pats = dict(name="CloudFormation Linter", version=get_cfnlint_version(
     "%s/src/cfnlint/version.py" % cfnlint_path), patterns=list())
 
 # Parse general rules
