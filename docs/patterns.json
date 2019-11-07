@@ -1,5 +1,5 @@
 {
-    "name": "cfn-lint",
+    "name": "CloudFormation Linter",
     "patterns": [
         {
             "category": "ErrorProne",

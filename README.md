@@ -1,6 +1,6 @@
 # Codacy CloudFormation Linter
 
-This is the docker engine we use at Codacy to have [cfn-lint](https://github.com/awslabs/cfn-python-lint) support.
+This is the docker engine we use at Codacy to have [CloudFormation Linter](https://github.com/awslabs/cfn-python-lint) support.
 You can also create a docker to integrate the tool and language of your choice!
 See the [codacy-engine-scala-seed](https://github.com/codacy/codacy-engine-scala-seed) repository for more information.
 
@@ -9,13 +9,13 @@ See the [codacy-engine-scala-seed](https://github.com/codacy/codacy-engine-scala
 You can create the docker by doing:
 
 ```
-docker build -t cfn-lint .
+docker build -t codacy-cfn-lint .
 ```
 
 The docker is ran with the following command:
 
 ```
-docker run -it -v $srcDir:/src  <DOCKER_NAME>:<DOCKER_VERSION>
+docker run -it -v $srcDir:/src <DOCKER_NAME>:<DOCKER_VERSION>
 ```
 
 ## Test
